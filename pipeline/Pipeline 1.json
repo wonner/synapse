@@ -1,0 +1,47 @@
+{
+	"name": "Pipeline 1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Spark job definition1",
+				"type": "SparkJob",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"sparkJob": {
+						"referenceName": "Spark job definition 1",
+						"type": "SparkJobDefinitionReference"
+					},
+					"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspace/batchjobs/Spark%20job%20definition%201/wordcount.jar",
+					"className": "WordCount",
+					"args": [
+						"abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/sample/wordtxt.txt",
+						"abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/sample/resultpip/"
+					],
+					"targetBigDataPool": {
+						"referenceName": "testpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": true,
+						"spark.dynamicAllocation.minExecutors": 3,
+						"spark.dynamicAllocation.maxExecutors": 9
+					},
+					"driverSize": "Small",
+					"numExecutors": 3
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-01-05T11:44:09Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
