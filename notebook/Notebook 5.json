@@ -1,5 +1,5 @@
 {
-	"name": "Notebook 1",
+	"name": "Notebook 5",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -13,11 +13,14 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "428e37dc-e5da-44c5-a25a-75660cd6c816"
+				"spark.autotune.trackingId": "fec5842c-42a4-4a95-a8c5-5356b6c4ed6f"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
