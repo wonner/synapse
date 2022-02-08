@@ -18,7 +18,19 @@
 					"sparkJob": {
 						"referenceName": "Spark job definition 2",
 						"type": "SparkJobDefinitionReference"
-					}
+					},
+					"targetBigDataPool": {
+						"referenceName": "testpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": null,
+					"conf": {
+						"spark.dynamicAllocation.enabled": null,
+						"spark.dynamicAllocation.minExecutors": null,
+						"spark.dynamicAllocation.maxExecutors": null
+					},
+					"driverSize": null,
+					"numExecutors": null
 				}
 			}
 		],
