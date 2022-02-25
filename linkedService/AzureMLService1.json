@@ -1,0 +1,18 @@
+{
+	"name": "AzureMLService1",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMLService",
+		"typeProperties": {
+			"subscriptionId": "8b3b8a60-1dd0-4824-8770-2ed6a55d8e27",
+			"resourceGroupName": "gyy_test",
+			"mlWorkspaceName": "gayangya-workspace",
+			"authentication": "MSI"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

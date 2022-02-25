@@ -1,0 +1,15 @@
+{
+	"name": "testpool",
+	"properties": {
+		"content": {
+			"query": "Logs | where TimeStamp > ago(1h) | take 10",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "testpool",
+				"databaseName": "testdatabase"
+			}
+		}
+	}
+}

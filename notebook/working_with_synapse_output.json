@@ -1,0 +1,359 @@
+{
+	"name": "working_with_synapse_output",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"metadata": {
+			"orig_nbformat": 2,
+			"kernelspec": {
+				"name": "python3",
+				"display_name": "Python 3"
+			},
+			"language_info": {
+				"name": "python"
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"source": [
+					"# Working with Synapse\n",
+					"\n",
+					"One of the advantages of a hosted notebook environment is having the ability to run and edit a notebook without setting up the development container. We use Synaspe to provide this hosted environment but there are some caveats to running a notebook in Synapse.\n",
+					"\n",
+					"**The goal of this notebook is to show how you can write notebooks that work the same in Synapse as they would in a standard IPython kernel.**\n",
+					"\n",
+					"### Topics:\n",
+					"1. Attaching to Spark pool & starting\n",
+					"2. Running the notebook\n",
+					"3. Kqlmagic\n",
+					"4. Authenticating Kusto\n",
+					"5. Display\n",
+					"    - pandas.DataFrame\n",
+					"    - matplotlib/seaborn\n",
+					"    - plotly\n",
+					"    - html/svg/markdown\n",
+					"\n",
+					"## Attaching to Spark pool & starting\n",
+					"\n",
+					"In order to run a notebook, it needs to be attached to an Apache Spark Pool. There is a dropdown menu on the top where you can select a Spark Pool and start it (if it is not already running). This operation can take a couple minutes. CosmosDB team's default Spark pool is called `cdbkeplerspool`.\n",
+					"\n",
+					"For language, select `PySpark (Python)` from the menu.\n",
+					"\n",
+					"Please note that you choose the correct Apache Spark pool where you've installed all your libraries.\n",
+					"\n",
+					"## Running the notebook\n",
+					"\n",
+					"Once the Spark Pool is started, you can run the cells of the notebook.\n",
+					"\n",
+					"## Kqlmagic\n",
+					"Kqlmagic works in that you can use it as a powerful Kusto SDK.\n",
+					"\n",
+					"## Authenticating Kusto\n",
+					"\n",
+					"To authenticate Kusto queries, we use device authentication in Synapse. The first cell you run with a Kusto query, you will see a prompt like so:\n",
+					"\n",
+					"```\n",
+					"To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code <CODE> to authenticate.\n",
+					"```\n",
+					"\n",
+					"Once authenticated, all subsequent Kusto queries will you your personal credentials to query and Kusto clusters that you have access to. If you restart the notebook or clear the state, you will have to authenticate again.\n",
+					"\n",
+					"See `examples/kqlmagic_intro.ipynb` on how to configure Kqlmagic connections.\n",
+					"\n"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from cosmosdb_tsg.livesite.kusto.clients import init_kql_magic\n",
+					"import datetime as dt\n",
+					"\n",
+					"init_kql_magic(cluster=\"cdbsupport\", database=\"Support\")\n",
+					"%reload_ext Kqlmagic\n",
+					"\n",
+					"database_account_name = 'custaccount-prod-azure-cosmosdb'\n",
+					"end_time = dt.datetime.utcnow().astimezone(dt.timezone.utc)\n",
+					"start_time = end_time - dt.timedelta(hours=8)\n"
+				],
+				"attachments": null,
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"You can save the result of a query into a variable, convert it to a `pandas.DataFrame` and then display it."
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%kql\n",
+					"\n",
+					"requests <<\n",
+					"let _database_account = database_account_name;\n",
+					"let _start_time = start_time;\n",
+					"let _end_time = end_time;\n",
+					"BackendEndRequest5M\n",
+					"| where TIMESTAMP between (todatetime(_start_time) .. todatetime(_end_time))\n",
+					"| where GlobalDatabaseAccountName == _database_account\n",
+					"| summarize TotalRequest = sum(SampleCount) by StatusCode, SubStatusCode, bin(TIMESTAMP, 1h)"
+				],
+				"attachments": null,
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"requests_df = requests.to_dataframe()\n",
+					"requests_df"
+				],
+				"attachments": null,
+				"execution_count": 4
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"Please note that you can also display this with: `from IPython.display import display`"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from IPython.display import display\n",
+					"display(requests_df)"
+				],
+				"attachments": null,
+				"execution_count": 5
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"Another option is to use Kqlmagic inline:"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def get_requests():\n",
+					"    query = \"\"\"\n",
+					"    let _database_account = database_account_name;\n",
+					"    let _start_time = start_time;\n",
+					"    let _end_time = end_time;\n",
+					"    BackendEndRequest5M\n",
+					"    | where TIMESTAMP between (todatetime(_start_time) .. todatetime(_end_time))\n",
+					"    | where GlobalDatabaseAccountName == _database_account\n",
+					"    | summarize TotalRequest = sum(SampleCount) by StatusCode, SubStatusCode, bin(TIMESTAMP, 1h)\n",
+					"    \"\"\"\n",
+					"    %kql result_var << -query query\n",
+					"    return result_var.to_dataframe()\n",
+					"\n",
+					"display(get_requests())"
+				],
+				"attachments": null,
+				"execution_count": 6
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"Using the `render` option:\n",
+					"\n",
+					"[Please note that the plots with the `render` option won't be displayed on the ICM discussions but only on the generated .html files and Synapse workspace]"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"init_kql_magic(cluster=\"help\", database=\"Samples\")\n",
+					"%reload_ext Kqlmagic"
+				],
+				"attachments": null,
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%kql StormEvents \\\n",
+					"| summarize event_count=count() by bin(StartTime, 1d) \\\n",
+					"| render timechart title= 'Daily Storm Events'"
+				],
+				"attachments": null,
+				"execution_count": 8
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Display\n",
+					"\n",
+					"The way Synapse  displays charts, tables, and other artifacts is similar to standard IPython kernel.\n",
+					"It displays the object at the last line of the cell. \n",
+					"We recommend using display() from IPython.display module, like this:\n",
+					"\n",
+					"`from IPython.display import display`\n",
+					"\n",
+					"### pandas.DataFrame\n",
+					"\n",
+					"To display a pandas.DataFrame, simply reference it in the last line of the cell, just like standard IPython kernel.\n",
+					"\n",
+					"### Matplotlib/Seaborn\n",
+					"\n",
+					"[`matplotlib.figure.Figure`](https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html) objects will render in Synapse. Simply referencing the Figure object or doing `plt.show()` in the last line of the cell will work in Synapse just like the standard IPython kernel.\n"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Taken from https://docs.databricks.com/notebooks/visualizations/matplotlib.html\n",
+					"import numpy as np\n",
+					"import matplotlib.pyplot as plt\n",
+					"\n",
+					"x = np.linspace(0, 2*np.pi, 50)\n",
+					"y = np.sin(x)\n",
+					"y2 = y + 0.1 * np.random.normal(size=x.shape)\n",
+					"\n",
+					"fig, ax = plt.subplots()\n",
+					"ax.plot(x, y, 'k--')\n",
+					"ax.plot(x, y2, 'ro')\n",
+					"# set ticks and tick labels\n",
+					"ax.set_xlim((0, 2*np.pi))\n",
+					"ax.set_xticks([0, np.pi, 2*np.pi])\n",
+					"ax.set_xticklabels(['0', '$\\pi$','2$\\pi$'])\n",
+					"ax.set_ylim((-1.5, 1.5))\n",
+					"ax.set_yticks([-1, 0, 1])\n",
+					"# Only draw spine between the y-ticks\n",
+					"ax.spines['left'].set_bounds(-1, 1)\n",
+					"# Hide the right and top spines\n",
+					"ax.spines['right'].set_visible(False)\n",
+					"ax.spines['top'].set_visible(False)\n",
+					"# Only show ticks on the left and bottom spines\n",
+					"ax.yaxis.set_ticks_position('left')\n",
+					"ax.xaxis.set_ticks_position('bottom')\n",
+					"\n",
+					"display(fig.show())"
+				],
+				"attachments": null,
+				"execution_count": 9
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					" Since seaborn uses Matplotlib Figure objects under the hood, this rule applies to seaborn plots as well. In the example below, `my_plot` is of type `matplotlib.axes._subplots.AxesSubplot`. To display it, we can acquire a reference to its figure and call `show()` on it.\n",
+					"\n",
+					" > The rule of thumb when displaying with matplotlib and seaborn charts in Synapse is to get the `matplotlib.figure.Figure` object somehow and either reference it in the last line or call `fig.show()`."
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Seaborn example\n",
+					"import seaborn as sns\n",
+					"requests_df = requests_df.sort_values('TIMESTAMP')\n",
+					"requests_df['FullyQualifiedStatusCode'] = requests_df['StatusCode'].astype(str) + ':' + requests_df['SubStatusCode'].astype(str)\n",
+					"\n",
+					"\n",
+					"my_plot = sns.lineplot(data=requests_df.groupby(by=['TIMESTAMP', 'FullyQualifiedStatusCode']).agg({'TotalRequest': 'sum'}), y='TotalRequest', x='TIMESTAMP', hue='FullyQualifiedStatusCode')\n",
+					"\n",
+					"my_plot.set_title('Requests over time')\n",
+					"\n",
+					"display(my_plot.figure.show())"
+				],
+				"attachments": null,
+				"execution_count": 10
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Plotly\n",
+					"\n",
+					"To display a Plotly [Figure](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html), call `fig.show()` on it.\n",
+					"\n",
+					"[Please note that the plots with `Plotly` option won't be displayed on the ICM discussions but only on the generated .html files and Synapse workspace]"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import plotly.io as pio\n",
+					"import plotly.express as px\n",
+					"\n",
+					"fig = px.line(\n",
+					"            data_frame=requests_df.groupby(by=['TIMESTAMP', 'FullyQualifiedStatusCode'], as_index=False).agg({'TotalRequest': 'sum'}),\n",
+					"            x='TIMESTAMP', \n",
+					"            y='TotalRequest',\n",
+					"            color='FullyQualifiedStatusCode',            \n",
+					"            title='Requests over time')\n",
+					"\n",
+					"display(fig.show())"
+				],
+				"attachments": null,
+				"execution_count": 11
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### HTML/Markdown/SVG\n",
+					"\n",
+					"Synapse is able to display HTML content. You can do it like so:"
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from IPython.display import HTML\n",
+					"display(HTML(\"<strong> sample html content</strong>\"))"
+				],
+				"attachments": null,
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"For SVG and Markdown content, the native `IPython.display.SVG` and `IPython.display.Markdown` classes will also works. But here we are converting it to HTML first and then displaying it."
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Display SVG\n",
+					"svg = \"\"\"\n",
+					"<svg width=\"100\" height=\"100\">\n",
+					"   <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />\n",
+					"</svg>\n",
+					"\"\"\"\n",
+					"display(HTML(svg))"
+				],
+				"attachments": null,
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Display Markdown\n",
+					"import markdown\n",
+					"\n",
+					"# convert to html\n",
+					"html = markdown.markdown(\"### sample markdown content\")\n",
+					"display(HTML(html))"
+				],
+				"attachments": null,
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"attachments": null,
+				"execution_count": null
+			}
+		]
+	}
+}

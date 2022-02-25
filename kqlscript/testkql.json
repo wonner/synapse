@@ -1,0 +1,11 @@
+{
+	"name": "testkql",
+	"properties": {
+		"content": {
+			"query": "Logs | where TimeStamp > ago(1h) | take 10",
+			"metadata": {
+				"language": "?"
+			}
+		}
+	}
+}

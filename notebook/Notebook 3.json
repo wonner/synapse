@@ -1,0 +1,100 @@
+{
+	"name": "Notebook 3",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "testzesspark",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "7b039d93-d352-4679-8407-30e1f3119eff"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3/resourceGroups/ywtest/providers/Microsoft.Synapse/workspaces/ywtestworkspace/bigDataPools/testzesspark",
+				"name": "testzesspark",
+				"type": "Spark",
+				"endpoint": "https://ywtestworkspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testzesspark",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import os\r\n",
+					"from azure.identity import DefaultAzureCredential\r\n",
+					"from azure.mgmt.cosmosdb import CosmosDBManagementClient\r\n",
+					"\r\n",
+					"# os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+					"# os.environ[\"AZURE_CLIENT_ID\"] = \"f6c029f5-dd31-4978-b994-bb635b6c94e6\"\r\n",
+					"# os.environ[\"AZURE_CLIENT_SECRET\"] = \"H6B?=odYg@.7iNbjYQRbCRP0jeiRPCO1\"\r\n",
+					"\r\n",
+					"credential = DefaultAzureCredential()\r\n",
+					"\r\n",
+					"subscription_id = \"051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3\"\r\n",
+					"resource_group_name = \"<your-rg-name>\"\r\n",
+					"account_name = \"<your-account-name>\"\r\n",
+					"\r\n",
+					"cosmos_client = CosmosDBManagementClient(credential, subscription_id)\r\n",
+					"cosmos_client.database_accounts.check_name_exists(\"name\")"
+				],
+				"attachments": null,
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import pkg_resources\r\n",
+					"for d in pkg_resources.working_set:\r\n",
+					"    print(d)"
+				],
+				"attachments": null,
+				"execution_count": 7
+			}
+		]
+	}
+}

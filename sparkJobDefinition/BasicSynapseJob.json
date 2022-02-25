@@ -1,0 +1,33 @@
+{
+	"name": "BasicSynapseJob",
+	"properties": {
+		"description": "Basic Synapse Python Job",
+		"targetBigDataPool": {
+			"referenceName": "spark",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "2.4",
+		"language": "python",
+		"jobProperties": {
+			"name": "BasicSynapseJob",
+			"file": "abfss://synapse-main@mdesynapsestgcus.dfs.core.windows.net/BasicSynapsePipeline/kustotest.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "89333a63-3c07-4937-aa50-40c9c2d7bb7c"
+			},
+			"args": [
+				"abfss://synapse-main@mdesynapsestgcus.dfs.core.windows.net/BasicSynapsePipeline/shakespeare.txt",
+				"abfss://synapse-main@mdesynapsestgcus.dfs.core.windows.net/BasicSynapsePipeline/result"
+			],
+			"jars": [],
+			"files": [],
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2
+		}
+	}
+}

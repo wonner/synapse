@@ -1,0 +1,49 @@
+{
+	"name": "Pipeline 4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Spark job definition1",
+				"type": "SparkJob",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"sparkJob": {
+						"referenceName": "Spark job definition 1",
+						"type": "SparkJobDefinitionReference"
+					}
+				}
+			},
+			{
+				"name": "SQL pool stored procedure1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "backup",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "a"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-02-25T05:16:34Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

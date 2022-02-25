@@ -1,0 +1,29 @@
+{
+	"name": "testJobDef",
+	"properties": {
+		"targetBigDataPool": {
+			"type": "BigDataPoolReference"
+		},
+		"language": "scala",
+		"jobProperties": {
+			"name": "testJobDef",
+			"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspace/batchjobs/Spark%20job%20definition%201/wordcount.jar",
+			"className": "WordCount",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "3",
+				"spark.dynamicAllocation.maxExecutors": "4"
+			},
+			"args": [
+				"test"
+			],
+			"jars": [],
+			"files": [],
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 3
+		}
+	}
+}
