@@ -19,7 +19,11 @@
 						"referenceName": "Notebook 1",
 						"type": "NotebookReference"
 					},
-					"snapshot": true
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "testpool",
+						"type": "BigDataPoolReference"
+					}
 				}
 			}
 		],
