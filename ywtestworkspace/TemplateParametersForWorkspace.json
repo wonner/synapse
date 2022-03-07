@@ -5,11 +5,29 @@
 		"workspaceName": {
 			"value": "ywtestworkspace"
 		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
 		"ywtestworkspace-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://ywtestkeyvault.vault.azure.net/"
+		},
+		"AzureMLService1_properties_typeProperties_subscriptionId": {
+			"value": "8b3b8a60-1dd0-4824-8770-2ed6a55d8e27"
+		},
+		"AzureMLService1_properties_typeProperties_resourceGroupName": {
+			"value": "gyy_test"
+		},
 		"ywtestworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://ywtestaccount.dfs.core.windows.net"
+		},
+		"Trigger 6_properties_typeProperties_scope": {
+			"value": "/subscriptions/051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3/resourceGroups/ywtest/providers/Microsoft.Storage/storageAccounts/ywtestaccount"
 		}
 	}
 }

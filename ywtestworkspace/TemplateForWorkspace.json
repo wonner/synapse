@@ -7,13 +7,37 @@
 			"metadata": "Workspace name",
 			"defaultValue": "ywtestworkspace"
 		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
 		"ywtestworkspace-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ywtestworkspace-WorkspaceDefaultSqlServer'"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://ywtestkeyvault.vault.azure.net/"
+		},
+		"AzureMLService1_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "8b3b8a60-1dd0-4824-8770-2ed6a55d8e27"
+		},
+		"AzureMLService1_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "gyy_test"
+		},
 		"ywtestworkspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://ywtestaccount.dfs.core.windows.net"
+		},
+		"Trigger 6_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3/resourceGroups/ywtest/providers/Microsoft.Storage/storageAccounts/ywtestaccount"
 		}
 	},
 	"variables": {
@@ -21,7 +45,205 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/ywtestsparkpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "Notebook 1",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "ywtestsparkpool",
+								"type": "BigDataPoolReference"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-03-03T06:46:55Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/Notebook 1')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/ywtestsparkpool')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 2')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Spark job definition1",
+						"type": "SparkJob",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"sparkJob": {
+								"referenceName": "Spark job definition 1",
+								"type": "SparkJobDefinitionReference"
+							},
+							"file": "",
+							"targetBigDataPool": {
+								"referenceName": "ywtestsparkpool",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": null,
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"driverSize": null,
+							"numExecutors": null
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-02-17T08:48:17Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/sparkJobDefinitions/Spark job definition 1')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/ywtestsparkpool')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 3')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Spark job definition1",
+						"type": "SparkJob",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"sparkJob": {
+								"referenceName": "Spark job definition 1",
+								"type": "SparkJobDefinitionReference"
+							},
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"numExecutors": null
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-01-17T11:40:13Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/sparkJobDefinitions/Spark job definition 1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 4')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Spark job definition1",
+						"type": "SparkJob",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"sparkJob": {
+								"referenceName": "Spark job definition 1",
+								"type": "SparkJobDefinitionReference"
+							},
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"numExecutors": null
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-02-25T05:16:34Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/sparkJobDefinitions/Spark job definition 1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 6')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -51,10 +273,149 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
-				"annotations": []
+				"parameters": {
+					"min": {
+						"type": "Int",
+						"defaultValue": 1
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-02-23T09:24:13Z"
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/Notebook 1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DelimitedText1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "ywtestfilesystem"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Excel1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "a",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "ywtestfilesystem"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureDatabricks1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-6948133610314626.6.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
+					},
+					"existingClusterId": "1",
+					"credential": {
+						"referenceName": "Credential1",
+						"type": "CredentialReference"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureMLService1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureMLService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('AzureMLService1_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('AzureMLService1_properties_typeProperties_resourceGroupName')]",
+					"mlWorkspaceName": "gayangya-workspace",
+					"authentication": "MSI"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -101,6 +462,98 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger 4')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 15,
+						"startTime": "2021-11-11T06:20:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger 5')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Minute",
+					"interval": 15,
+					"startTime": "2021-11-11T06:54:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger 6')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/ywtestfilesystem/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('Trigger 6_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger 7')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Pipeline 6",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 15,
+						"startTime": "2022-02-22T10:28:00Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/Pipeline 6')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
 			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
 			"apiVersion": "2019-06-01-preview",
@@ -114,6 +567,256 @@
 							"coreCount": 8,
 							"timeToLive": 0
 						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Excel1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "parameters{\n\tparameter1 as string\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Excel1')]",
+				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dataflow2')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [],
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nsource2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Credential1')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {
+					"resourceId": "/subscriptions/051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3/resourcegroups/ywtest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ywuami"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 3')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "New folder/New folder"
+				},
+				"content": {
+					"query": "SELECT *",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "New folder 1"
+				},
+				"content": {
+					"query": "SELECT *",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 4_me0')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "New folder/testmulti"
+				},
+				"content": {
+					"query": "",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 5')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "New folder/New folder"
+				},
+				"content": {
+					"query": "",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testbash')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "testbash"
+				},
+				"content": {
+					"query": "SELECT *\r\nSELECT *",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testkql')]",
+			"type": "Microsoft.Synapse/workspaces/kqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "Logs | where TimeStamp > ago(1h) | take 10",
+					"metadata": {
+						"language": "?"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testpool')]",
+			"type": "Microsoft.Synapse/workspaces/kqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "Logs | where TimeStamp > ago(1h) | take 10",
+					"metadata": {
+						"language": "kql"
+					},
+					"currentConnection": {
+						"poolName": "testpool",
+						"databaseName": "testdatabase"
 					}
 				}
 			},
@@ -136,11 +839,14 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "428e37dc-e5da-44c5-a25a-75660cd6c816"
+						"spark.autotune.trackingId": "b5cc5d3c-0209-4a48-93b6-cc94d8e50aa8"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
 					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
@@ -154,10 +860,10 @@
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
-							""
+							"fdasfe"
 						],
+						"attachments": null,
 						"outputs": [],
 						"execution_count": null
 					}
@@ -166,28 +872,1310 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/backup')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"name": "[concat(parameters('workspaceName'), '/Notebook 3')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "testzesspark",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "7b039d93-d352-4679-8407-30e1f3119eff"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3/resourceGroups/ywtest/providers/Microsoft.Synapse/workspaces/ywtestworkspace/bigDataPools/testzesspark",
+						"name": "testzesspark",
+						"type": "Spark",
+						"endpoint": "https://ywtestworkspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testzesspark",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import os\r\n",
+							"from azure.identity import DefaultAzureCredential\r\n",
+							"from azure.mgmt.cosmosdb import CosmosDBManagementClient\r\n",
+							"\r\n",
+							"# os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+							"# os.environ[\"AZURE_CLIENT_ID\"] = \"f6c029f5-dd31-4978-b994-bb635b6c94e6\"\r\n",
+							"# os.environ[\"AZURE_CLIENT_SECRET\"] = \"H6B?=odYg@.7iNbjYQRbCRP0jeiRPCO1\"\r\n",
+							"\r\n",
+							"credential = DefaultAzureCredential()\r\n",
+							"\r\n",
+							"subscription_id = \"051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3\"\r\n",
+							"resource_group_name = \"<your-rg-name>\"\r\n",
+							"account_name = \"<your-account-name>\"\r\n",
+							"\r\n",
+							"cosmos_client = CosmosDBManagementClient(credential, subscription_id)\r\n",
+							"cosmos_client.database_accounts.check_name_exists(\"name\")"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import pkg_resources\r\n",
+							"for d in pkg_resources.working_set:\r\n",
+							"    print(d)"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 7
+					}
+				]
 			},
-			"dependsOn": [],
-			"location": "eastus2"
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/ywtestsqlpool')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"name": "[concat(parameters('workspaceName'), '/Notebook 5')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "fec5842c-42a4-4a95-a8c5-5356b6c4ed6f"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
 			},
-			"dependsOn": [],
-			"location": "eastus2"
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 6')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "e2ce8ea9-e673-4dbd-b059-58c99f447d3d"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 7')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "e0113646-c342-4f2f-888b-bdb4382d7fba"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 8')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "97bec753-2db4-4e92-8fd9-3be456680543"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 9')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "aabdf74b-3e95-40a8-9e09-454025c343a9"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/notebook')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "testzesspark",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "4915d5a3-b1e8-412b-a3f9-77cc937091d5"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/051ddeca-1ed6-4d8b-ba6f-1ff561e5f3b3/resourceGroups/ywtest/providers/Microsoft.Synapse/workspaces/ywtestworkspace/bigDataPools/testzesspark",
+						"name": "testzesspark",
+						"type": "Spark",
+						"endpoint": "https://ywtestworkspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/testzesspark",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"print(\"hello\")"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 1
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testtesttest')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"metadata": {
+					"kernelspec": {
+						"name": "python3",
+						"display_name": "Python 3"
+					},
+					"language_info": {
+						"name": "python"
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"# Working with Synapse\n",
+							"\n",
+							"One of the advantages of a hosted notebook environment is having the ability to run and edit a notebook without setting up the development container. We use Synaspe to provide this hosted environment but there are some caveats to running a notebook in Synapse.\n",
+							"\n",
+							"**The goal of this notebook is to show how you can write notebooks that work the same in Synapse as they would in a standard IPython kernel.**\n",
+							"\n",
+							"### Topics:\n",
+							"1. Attaching to Spark pool & starting\n",
+							"2. Running the notebook\n",
+							"3. Kqlmagic\n",
+							"4. Authenticating Kusto\n",
+							"5. Display\n",
+							"    - pandas.DataFrame\n",
+							"    - matplotlib/seaborn\n",
+							"    - plotly\n",
+							"    - html/svg/markdown\n",
+							"\n",
+							"## Attaching to Spark pool & starting\n",
+							"\n",
+							"In order to run a notebook, it needs to be attached to an Apache Spark Pool. There is a dropdown menu on the top where you can select a Spark Pool and start it (if it is not already running). This operation can take a couple minutes. CosmosDB team's default Spark pool is called `cdbkeplerspool`.\n",
+							"\n",
+							"For language, select `PySpark (Python)` from the menu.\n",
+							"\n",
+							"Please note that you choose the correct Apache Spark pool where you've installed all your libraries.\n",
+							"\n",
+							"## Running the notebook\n",
+							"\n",
+							"Once the Spark Pool is started, you can run the cells of the notebook.\n",
+							"\n",
+							"## Kqlmagic\n",
+							"Kqlmagic works in that you can use it as a powerful Kusto SDK.\n",
+							"\n",
+							"## Authenticating Kusto\n",
+							"\n",
+							"To authenticate Kusto queries, we use device authentication in Synapse. The first cell you run with a Kusto query, you will see a prompt like so:\n",
+							"\n",
+							"```\n",
+							"To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code <CODE> to authenticate.\n",
+							"```\n",
+							"\n",
+							"Once authenticated, all subsequent Kusto queries will you your personal credentials to query and Kusto clusters that you have access to. If you restart the notebook or clear the state, you will have to authenticate again.\n",
+							"\n",
+							"See `examples/kqlmagic_intro.ipynb` on how to configure Kqlmagic connections.\n",
+							"\n"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from cosmosdb_tsg.livesite.kusto.clients import init_kql_magic\n",
+							"import datetime as dt\n",
+							"\n",
+							"init_kql_magic(cluster=\"cdbsupport\", database=\"Support\")\n",
+							"%reload_ext Kqlmagic\n",
+							"\n",
+							"database_account_name = 'custaccount-prod-azure-cosmosdb'\n",
+							"end_time = dt.datetime.utcnow().astimezone(dt.timezone.utc)\n",
+							"start_time = end_time - dt.timedelta(hours=8)\n"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"You can save the result of a query into a variable, convert it to a `pandas.DataFrame` and then display it."
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"%%kql\n",
+							"\n",
+							"requests <<\n",
+							"let _database_account = database_account_name;\n",
+							"let _start_time = start_time;\n",
+							"let _end_time = end_time;\n",
+							"BackendEndRequest5M\n",
+							"| where TIMESTAMP between (todatetime(_start_time) .. todatetime(_end_time))\n",
+							"| where GlobalDatabaseAccountName == _database_account\n",
+							"| summarize TotalRequest = sum(SampleCount) by StatusCode, SubStatusCode, bin(TIMESTAMP, 1h)"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"requests_df = requests.to_dataframe()\n",
+							"requests_df"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Please note that you can also display this with: `from IPython.display import display`"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from IPython.display import display\n",
+							"display(requests_df)"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Another option is to use Kqlmagic inline:"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"def get_requests():\n",
+							"    query = \"\"\"\n",
+							"    let _database_account = database_account_name;\n",
+							"    let _start_time = start_time;\n",
+							"    let _end_time = end_time;\n",
+							"    BackendEndRequest5M\n",
+							"    | where TIMESTAMP between (todatetime(_start_time) .. todatetime(_end_time))\n",
+							"    | where GlobalDatabaseAccountName == _database_account\n",
+							"    | summarize TotalRequest = sum(SampleCount) by StatusCode, SubStatusCode, bin(TIMESTAMP, 1h)\n",
+							"    \"\"\"\n",
+							"    %kql result_var << -query query\n",
+							"    return result_var.to_dataframe()\n",
+							"\n",
+							"display(get_requests())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Using the `render` option:\n",
+							"\n",
+							"[Please note that the plots with the `render` option won't be displayed on the ICM discussions but only on the generated .html files and Synapse workspace]"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"init_kql_magic(cluster=\"help\", database=\"Samples\")\n",
+							"%reload_ext Kqlmagic"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"%kql StormEvents \\\n",
+							"| summarize event_count=count() by bin(StartTime, 1d) \\\n",
+							"| render timechart title= 'Daily Storm Events'"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Display\n",
+							"\n",
+							"The way Synapse  displays charts, tables, and other artifacts is similar to standard IPython kernel.\n",
+							"It displays the object at the last line of the cell. \n",
+							"We recommend using display() from IPython.display module, like this:\n",
+							"\n",
+							"`from IPython.display import display`\n",
+							"\n",
+							"### pandas.DataFrame\n",
+							"\n",
+							"To display a pandas.DataFrame, simply reference it in the last line of the cell, just like standard IPython kernel.\n",
+							"\n",
+							"### Matplotlib/Seaborn\n",
+							"\n",
+							"[`matplotlib.figure.Figure`](https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html) objects will render in Synapse. Simply referencing the Figure object or doing `plt.show()` in the last line of the cell will work in Synapse just like the standard IPython kernel.\n"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Taken from https://docs.databricks.com/notebooks/visualizations/matplotlib.html\n",
+							"import numpy as np\n",
+							"import matplotlib.pyplot as plt\n",
+							"\n",
+							"x = np.linspace(0, 2*np.pi, 50)\n",
+							"y = np.sin(x)\n",
+							"y2 = y + 0.1 * np.random.normal(size=x.shape)\n",
+							"\n",
+							"fig, ax = plt.subplots()\n",
+							"ax.plot(x, y, 'k--')\n",
+							"ax.plot(x, y2, 'ro')\n",
+							"# set ticks and tick labels\n",
+							"ax.set_xlim((0, 2*np.pi))\n",
+							"ax.set_xticks([0, np.pi, 2*np.pi])\n",
+							"ax.set_xticklabels(['0', '$\\pi$','2$\\pi$'])\n",
+							"ax.set_ylim((-1.5, 1.5))\n",
+							"ax.set_yticks([-1, 0, 1])\n",
+							"# Only draw spine between the y-ticks\n",
+							"ax.spines['left'].set_bounds(-1, 1)\n",
+							"# Hide the right and top spines\n",
+							"ax.spines['right'].set_visible(False)\n",
+							"ax.spines['top'].set_visible(False)\n",
+							"# Only show ticks on the left and bottom spines\n",
+							"ax.yaxis.set_ticks_position('left')\n",
+							"ax.xaxis.set_ticks_position('bottom')\n",
+							"\n",
+							"display(fig.show())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							" Since seaborn uses Matplotlib Figure objects under the hood, this rule applies to seaborn plots as well. In the example below, `my_plot` is of type `matplotlib.axes._subplots.AxesSubplot`. To display it, we can acquire a reference to its figure and call `show()` on it.\n",
+							"\n",
+							" > The rule of thumb when displaying with matplotlib and seaborn charts in Synapse is to get the `matplotlib.figure.Figure` object somehow and either reference it in the last line or call `fig.show()`."
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Seaborn example\n",
+							"import seaborn as sns\n",
+							"requests_df = requests_df.sort_values('TIMESTAMP')\n",
+							"requests_df['FullyQualifiedStatusCode'] = requests_df['StatusCode'].astype(str) + ':' + requests_df['SubStatusCode'].astype(str)\n",
+							"\n",
+							"\n",
+							"my_plot = sns.lineplot(data=requests_df.groupby(by=['TIMESTAMP', 'FullyQualifiedStatusCode']).agg({'TotalRequest': 'sum'}), y='TotalRequest', x='TIMESTAMP', hue='FullyQualifiedStatusCode')\n",
+							"\n",
+							"my_plot.set_title('Requests over time')\n",
+							"\n",
+							"display(my_plot.figure.show())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Plotly\n",
+							"\n",
+							"To display a Plotly [Figure](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html), call `fig.show()` on it.\n",
+							"\n",
+							"[Please note that the plots with `Plotly` option won't be displayed on the ICM discussions but only on the generated .html files and Synapse workspace]"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import plotly.io as pio\n",
+							"import plotly.express as px\n",
+							"\n",
+							"fig = px.line(\n",
+							"            data_frame=requests_df.groupby(by=['TIMESTAMP', 'FullyQualifiedStatusCode'], as_index=False).agg({'TotalRequest': 'sum'}),\n",
+							"            x='TIMESTAMP', \n",
+							"            y='TotalRequest',\n",
+							"            color='FullyQualifiedStatusCode',            \n",
+							"            title='Requests over time')\n",
+							"\n",
+							"display(fig.show())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### HTML/Markdown/SVG\n",
+							"\n",
+							"Synapse is able to display HTML content. You can do it like so:"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from IPython.display import HTML\n",
+							"display(HTML(\"<strong> sample html content</strong>\"))"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"For SVG and Markdown content, the native `IPython.display.SVG` and `IPython.display.Markdown` classes will also works. But here we are converting it to HTML first and then displaying it."
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Display SVG\n",
+							"svg = \"\"\"\n",
+							"<svg width=\"100\" height=\"100\">\n",
+							"   <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />\n",
+							"</svg>\n",
+							"\"\"\"\n",
+							"display(HTML(svg))"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Display Markdown\n",
+							"import markdown\n",
+							"\n",
+							"# convert to html\n",
+							"html = markdown.markdown(\"### sample markdown content\")\n",
+							"display(HTML(html))"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/working_with_synapse_output')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"metadata": {
+					"orig_nbformat": 2,
+					"kernelspec": {
+						"name": "python3",
+						"display_name": "Python 3"
+					},
+					"language_info": {
+						"name": "python"
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"# Working with Synapse\n",
+							"\n",
+							"One of the advantages of a hosted notebook environment is having the ability to run and edit a notebook without setting up the development container. We use Synaspe to provide this hosted environment but there are some caveats to running a notebook in Synapse.\n",
+							"\n",
+							"**The goal of this notebook is to show how you can write notebooks that work the same in Synapse as they would in a standard IPython kernel.**\n",
+							"\n",
+							"### Topics:\n",
+							"1. Attaching to Spark pool & starting\n",
+							"2. Running the notebook\n",
+							"3. Kqlmagic\n",
+							"4. Authenticating Kusto\n",
+							"5. Display\n",
+							"    - pandas.DataFrame\n",
+							"    - matplotlib/seaborn\n",
+							"    - plotly\n",
+							"    - html/svg/markdown\n",
+							"\n",
+							"## Attaching to Spark pool & starting\n",
+							"\n",
+							"In order to run a notebook, it needs to be attached to an Apache Spark Pool. There is a dropdown menu on the top where you can select a Spark Pool and start it (if it is not already running). This operation can take a couple minutes. CosmosDB team's default Spark pool is called `cdbkeplerspool`.\n",
+							"\n",
+							"For language, select `PySpark (Python)` from the menu.\n",
+							"\n",
+							"Please note that you choose the correct Apache Spark pool where you've installed all your libraries.\n",
+							"\n",
+							"## Running the notebook\n",
+							"\n",
+							"Once the Spark Pool is started, you can run the cells of the notebook.\n",
+							"\n",
+							"## Kqlmagic\n",
+							"Kqlmagic works in that you can use it as a powerful Kusto SDK.\n",
+							"\n",
+							"## Authenticating Kusto\n",
+							"\n",
+							"To authenticate Kusto queries, we use device authentication in Synapse. The first cell you run with a Kusto query, you will see a prompt like so:\n",
+							"\n",
+							"```\n",
+							"To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code <CODE> to authenticate.\n",
+							"```\n",
+							"\n",
+							"Once authenticated, all subsequent Kusto queries will you your personal credentials to query and Kusto clusters that you have access to. If you restart the notebook or clear the state, you will have to authenticate again.\n",
+							"\n",
+							"See `examples/kqlmagic_intro.ipynb` on how to configure Kqlmagic connections.\n",
+							"\n"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from cosmosdb_tsg.livesite.kusto.clients import init_kql_magic\n",
+							"import datetime as dt\n",
+							"\n",
+							"init_kql_magic(cluster=\"cdbsupport\", database=\"Support\")\n",
+							"%reload_ext Kqlmagic\n",
+							"\n",
+							"database_account_name = 'custaccount-prod-azure-cosmosdb'\n",
+							"end_time = dt.datetime.utcnow().astimezone(dt.timezone.utc)\n",
+							"start_time = end_time - dt.timedelta(hours=8)\n"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"You can save the result of a query into a variable, convert it to a `pandas.DataFrame` and then display it."
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"%%kql\n",
+							"\n",
+							"requests <<\n",
+							"let _database_account = database_account_name;\n",
+							"let _start_time = start_time;\n",
+							"let _end_time = end_time;\n",
+							"BackendEndRequest5M\n",
+							"| where TIMESTAMP between (todatetime(_start_time) .. todatetime(_end_time))\n",
+							"| where GlobalDatabaseAccountName == _database_account\n",
+							"| summarize TotalRequest = sum(SampleCount) by StatusCode, SubStatusCode, bin(TIMESTAMP, 1h)"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"requests_df = requests.to_dataframe()\n",
+							"requests_df"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Please note that you can also display this with: `from IPython.display import display`"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from IPython.display import display\n",
+							"display(requests_df)"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Another option is to use Kqlmagic inline:"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"def get_requests():\n",
+							"    query = \"\"\"\n",
+							"    let _database_account = database_account_name;\n",
+							"    let _start_time = start_time;\n",
+							"    let _end_time = end_time;\n",
+							"    BackendEndRequest5M\n",
+							"    | where TIMESTAMP between (todatetime(_start_time) .. todatetime(_end_time))\n",
+							"    | where GlobalDatabaseAccountName == _database_account\n",
+							"    | summarize TotalRequest = sum(SampleCount) by StatusCode, SubStatusCode, bin(TIMESTAMP, 1h)\n",
+							"    \"\"\"\n",
+							"    %kql result_var << -query query\n",
+							"    return result_var.to_dataframe()\n",
+							"\n",
+							"display(get_requests())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Using the `render` option:\n",
+							"\n",
+							"[Please note that the plots with the `render` option won't be displayed on the ICM discussions but only on the generated .html files and Synapse workspace]"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"init_kql_magic(cluster=\"help\", database=\"Samples\")\n",
+							"%reload_ext Kqlmagic"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"%kql StormEvents \\\n",
+							"| summarize event_count=count() by bin(StartTime, 1d) \\\n",
+							"| render timechart title= 'Daily Storm Events'"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Display\n",
+							"\n",
+							"The way Synapse  displays charts, tables, and other artifacts is similar to standard IPython kernel.\n",
+							"It displays the object at the last line of the cell. \n",
+							"We recommend using display() from IPython.display module, like this:\n",
+							"\n",
+							"`from IPython.display import display`\n",
+							"\n",
+							"### pandas.DataFrame\n",
+							"\n",
+							"To display a pandas.DataFrame, simply reference it in the last line of the cell, just like standard IPython kernel.\n",
+							"\n",
+							"### Matplotlib/Seaborn\n",
+							"\n",
+							"[`matplotlib.figure.Figure`](https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html) objects will render in Synapse. Simply referencing the Figure object or doing `plt.show()` in the last line of the cell will work in Synapse just like the standard IPython kernel.\n"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Taken from https://docs.databricks.com/notebooks/visualizations/matplotlib.html\n",
+							"import numpy as np\n",
+							"import matplotlib.pyplot as plt\n",
+							"\n",
+							"x = np.linspace(0, 2*np.pi, 50)\n",
+							"y = np.sin(x)\n",
+							"y2 = y + 0.1 * np.random.normal(size=x.shape)\n",
+							"\n",
+							"fig, ax = plt.subplots()\n",
+							"ax.plot(x, y, 'k--')\n",
+							"ax.plot(x, y2, 'ro')\n",
+							"# set ticks and tick labels\n",
+							"ax.set_xlim((0, 2*np.pi))\n",
+							"ax.set_xticks([0, np.pi, 2*np.pi])\n",
+							"ax.set_xticklabels(['0', '$\\pi$','2$\\pi$'])\n",
+							"ax.set_ylim((-1.5, 1.5))\n",
+							"ax.set_yticks([-1, 0, 1])\n",
+							"# Only draw spine between the y-ticks\n",
+							"ax.spines['left'].set_bounds(-1, 1)\n",
+							"# Hide the right and top spines\n",
+							"ax.spines['right'].set_visible(False)\n",
+							"ax.spines['top'].set_visible(False)\n",
+							"# Only show ticks on the left and bottom spines\n",
+							"ax.yaxis.set_ticks_position('left')\n",
+							"ax.xaxis.set_ticks_position('bottom')\n",
+							"\n",
+							"display(fig.show())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							" Since seaborn uses Matplotlib Figure objects under the hood, this rule applies to seaborn plots as well. In the example below, `my_plot` is of type `matplotlib.axes._subplots.AxesSubplot`. To display it, we can acquire a reference to its figure and call `show()` on it.\n",
+							"\n",
+							" > The rule of thumb when displaying with matplotlib and seaborn charts in Synapse is to get the `matplotlib.figure.Figure` object somehow and either reference it in the last line or call `fig.show()`."
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Seaborn example\n",
+							"import seaborn as sns\n",
+							"requests_df = requests_df.sort_values('TIMESTAMP')\n",
+							"requests_df['FullyQualifiedStatusCode'] = requests_df['StatusCode'].astype(str) + ':' + requests_df['SubStatusCode'].astype(str)\n",
+							"\n",
+							"\n",
+							"my_plot = sns.lineplot(data=requests_df.groupby(by=['TIMESTAMP', 'FullyQualifiedStatusCode']).agg({'TotalRequest': 'sum'}), y='TotalRequest', x='TIMESTAMP', hue='FullyQualifiedStatusCode')\n",
+							"\n",
+							"my_plot.set_title('Requests over time')\n",
+							"\n",
+							"display(my_plot.figure.show())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Plotly\n",
+							"\n",
+							"To display a Plotly [Figure](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html), call `fig.show()` on it.\n",
+							"\n",
+							"[Please note that the plots with `Plotly` option won't be displayed on the ICM discussions but only on the generated .html files and Synapse workspace]"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import plotly.io as pio\n",
+							"import plotly.express as px\n",
+							"\n",
+							"fig = px.line(\n",
+							"            data_frame=requests_df.groupby(by=['TIMESTAMP', 'FullyQualifiedStatusCode'], as_index=False).agg({'TotalRequest': 'sum'}),\n",
+							"            x='TIMESTAMP', \n",
+							"            y='TotalRequest',\n",
+							"            color='FullyQualifiedStatusCode',            \n",
+							"            title='Requests over time')\n",
+							"\n",
+							"display(fig.show())"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### HTML/Markdown/SVG\n",
+							"\n",
+							"Synapse is able to display HTML content. You can do it like so:"
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from IPython.display import HTML\n",
+							"display(HTML(\"<strong> sample html content</strong>\"))"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"For SVG and Markdown content, the native `IPython.display.SVG` and `IPython.display.Markdown` classes will also works. But here we are converting it to HTML first and then displaying it."
+						],
+						"attachments": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Display SVG\n",
+							"svg = \"\"\"\n",
+							"<svg width=\"100\" height=\"100\">\n",
+							"   <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />\n",
+							"</svg>\n",
+							"\"\"\"\n",
+							"display(HTML(svg))"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Display Markdown\n",
+							"import markdown\n",
+							"\n",
+							"# convert to html\n",
+							"html = markdown.markdown(\"### sample markdown content\")\n",
+							"display(HTML(html))"
+						],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"source": [],
+						"attachments": null,
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/BasicSynapseJob')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Basic Synapse Python Job",
+				"targetBigDataPool": {
+					"referenceName": "spark",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "2.4",
+				"language": "python",
+				"jobProperties": {
+					"name": "BasicSynapseJob",
+					"file": "abfss://synapse-main@mdesynapsestgcus.dfs.core.windows.net/BasicSynapsePipeline/kustotest.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "89333a63-3c07-4937-aa50-40c9c2d7bb7c"
+					},
+					"args": [
+						"abfss://synapse-main@mdesynapsestgcus.dfs.core.windows.net/BasicSynapsePipeline/shakespeare.txt",
+						"abfss://synapse-main@mdesynapsestgcus.dfs.core.windows.net/BasicSynapsePipeline/result"
+					],
+					"jars": [],
+					"files": [],
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Spark job definition 1')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "ywtestsparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "scala",
+				"jobProperties": {
+					"name": "Spark job definition 1",
+					"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspace/batchjobs/Spark%20job%20definition%201/wordcount.jar",
+					"className": "WordCount",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "d2f53abc-8024-472d-8e92-a9590d5b03f0"
+					},
+					"args": [
+						"abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/sample/wordtxt.txt",
+						"abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/sample/result/"
+					],
+					"jars": [],
+					"files": [],
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Spark job definition 2')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "spark",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "2.4",
+				"language": "scala",
+				"jobProperties": {
+					"name": "Spark job definition 2",
+					"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspace/batchjobs/Spark%20job%20definition%201/wordcount.jar",
+					"className": "WordCount",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "e99c30c2-299f-4c43-a424-b86275631456"
+					},
+					"args": [],
+					"jars": [],
+					"files": [],
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testJobDef')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"type": "BigDataPoolReference"
+				},
+				"language": "scala",
+				"jobProperties": {
+					"name": "testJobDef",
+					"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspace/batchjobs/Spark%20job%20definition%201/wordcount.jar",
+					"className": "WordCount",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "3",
+						"spark.dynamicAllocation.maxExecutors": "4"
+					},
+					"args": [
+						"test"
+					],
+					"jars": [],
+					"files": [],
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 3
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
