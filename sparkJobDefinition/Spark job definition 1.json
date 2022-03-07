@@ -2,7 +2,7 @@
 	"name": "Spark job definition 1",
 	"properties": {
 		"targetBigDataPool": {
-			"referenceName": "testxxlarge",
+			"referenceName": "ywtestsparkpool",
 			"type": "BigDataPoolReference"
 		},
 		"requiredSparkVersion": "3.1",
@@ -12,11 +12,10 @@
 			"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspace/batchjobs/Spark%20job%20definition%201/wordcount.jar",
 			"className": "WordCount",
 			"conf": {
-				"spark.dynamicAllocation.enabled": "true",
-				"spark.dynamicAllocation.minExecutors": "8",
-				"spark.dynamicAllocation.maxExecutors": "18",
-				"spark.autotune.trackingId": "e1a8f31d-10e5-4c0b-9b32-c4b682e9810a",
-				"spark.yarn.appMasterEnv.DOTNET_ASSEMBLY_SEARCH_PATHS": "./udfs"
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "d2f53abc-8024-472d-8e92-a9590d5b03f0"
 			},
 			"args": [
 				"abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/sample/wordtxt.txt",
@@ -28,7 +27,7 @@
 			"driverCores": 4,
 			"executorMemory": "28g",
 			"executorCores": 4,
-			"numExecutors": 8
+			"numExecutors": 2
 		}
 	}
 }
