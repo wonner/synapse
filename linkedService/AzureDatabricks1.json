@@ -1,0 +1,14 @@
+{
+	"name": "AzureDatabricks1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-389236853074846.6.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/7963e903-a773-4208-b760-256722b3e26f/resourceGroups/haoy_adb/providers/Microsoft.Databricks/workspaces/haoyPremiumAdb",
+			"existingClusterId": "0706-051016-foemvdzg"
+		}
+	}
+}

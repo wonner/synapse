@@ -1,0 +1,45 @@
+{
+	"name": "pipeline4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Spark job definition1",
+				"type": "SparkJob",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"sparkJob": {
+						"referenceName": {
+							"value": "Spark job definition 1",
+							"type": "Expression"
+						},
+						"type": "SparkJobDefinitionReference"
+					},
+					"targetBigDataPool": {
+						"referenceName": {
+							"value": "testpool1",
+							"type": "Expression"
+						},
+						"type": "bigDataPoolReference"
+					},
+					"executorSize": null,
+					"driverSize": null
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseArtifacts1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-06-21T07:29:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

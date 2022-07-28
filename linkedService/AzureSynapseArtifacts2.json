@@ -1,0 +1,12 @@
+{
+	"name": "AzureSynapseArtifacts2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSynapseArtifacts",
+		"typeProperties": {
+			"endpoint": "https://ywtestworkspacewcu.dev.azuresynapse.net",
+			"authentication": "MSI"
+		}
+	}
+}

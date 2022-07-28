@@ -1,0 +1,54 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook1",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": {
+							"value": "Notebook 1",
+							"type": "Expression"
+						},
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": {
+							"value": "testpool",
+							"type": "Expression"
+						},
+						"type": "BigDataPoolReference"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseArtifacts1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"notebook": {
+				"type": "String",
+				"defaultValue": "Notebook 1"
+			},
+			"testpool": {
+				"type": "String",
+				"defaultValue": "testpool"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-18T07:41:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
