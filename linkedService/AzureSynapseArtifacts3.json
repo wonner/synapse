@@ -1,0 +1,11 @@
+{
+	"name": "AzureSynapseArtifacts3",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSynapseArtifacts",
+		"typeProperties": {
+			"endpoint": "https://ywtestworkspacevnet.dev.azuresynapse.net",
+			"authentication": "MSI"
+		}
+	}
+}
