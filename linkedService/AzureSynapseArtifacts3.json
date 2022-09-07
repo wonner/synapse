@@ -1,0 +1,18 @@
+{
+	"name": "AzureSynapseArtifacts3",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"AzureMLService1": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSynapseArtifacts",
+		"typeProperties": {
+			"endpoint": "@{linkedService().AzureMLService1}",
+			"authentication": "MSI",
+			"workspaceResourceId": "a"
+		}
+	}
+}

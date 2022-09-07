@@ -1,0 +1,9 @@
+{
+	"name": "ywtestadfwcu",
+	"location": "westcentralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "4c63868e-4cdc-4b70-9331-7674b1b80976",
+		"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+	}
+}
