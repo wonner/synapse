@@ -1,0 +1,163 @@
+{
+	"name": "testnotebook",
+	"properties": {
+		"activities": [
+			{
+				"name": "NotebookEntry",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:15:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": {
+							"value": "NotebookEntry",
+							"type": "Expression"
+						},
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"num": {
+							"value": "20",
+							"type": "int"
+						},
+						"flag": {
+							"value": false,
+							"type": "bool"
+						},
+						"float_num": {
+							"value": "20.50",
+							"type": "float"
+						},
+						"hello_ms": {
+							"value": "hello 微软",
+							"type": "string"
+						},
+						"start_time": {
+							"value": "2021-04-06T02:00:00Z",
+							"type": "string"
+						}
+					},
+					"conf": {
+						"spark.dynamicAllocation.enabled": null,
+						"spark.dynamicAllocation.minExecutors": null,
+						"spark.dynamicAllocation.maxExecutors": null
+					},
+					"numExecutors": null
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseArtifacts",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "CheckNotebookOutput",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "NotebookEntry_2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('NotebookEntry').output.status.Output.result.exitValue, 'hello 微软'), equals(activity('NotebookEntry_2').output.status.Output.result.exitValue, 'hello 微软'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail on Activity",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.00:15:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://invalid.com",
+								"method": "GET"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "NotebookEntry_2",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "NotebookEntry",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:15:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": {
+							"value": "NotebookEntry",
+							"type": "Expression"
+						},
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"num": {
+							"value": "20",
+							"type": "int"
+						},
+						"flag": {
+							"value": false,
+							"type": "bool"
+						},
+						"float_num": {
+							"value": "20.50",
+							"type": "float"
+						},
+						"hello_ms": {
+							"value": "hello 微软",
+							"type": "string"
+						},
+						"start_time": {
+							"value": "2021-04-06T02:00:00Z",
+							"type": "string"
+						}
+					},
+					"conf": {
+						"spark.dynamicAllocation.enabled": null,
+						"spark.dynamicAllocation.minExecutors": null,
+						"spark.dynamicAllocation.maxExecutors": null
+					},
+					"numExecutors": null
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseArtifacts",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-10-24T07:34:22Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

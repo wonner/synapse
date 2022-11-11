@@ -1,0 +1,12 @@
+{
+	"name": "AzureSynapseArtifacts",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "AzureSynapseArtifacts",
+		"typeProperties": {
+			"endpoint": "##WorkspaceDevEndpoint##",
+			"authentication": "MSI"
+		},
+		"annotations": []
+	}
+}
