@@ -1,0 +1,33 @@
+{
+	"name": "Spark job definition 2",
+	"properties": {
+		"targetBigDataPool": {
+			"referenceName": "testpool",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.1",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "Spark job definition 2",
+			"file": "abfss://ywtestfilesystem@ywtestaccount.dfs.core.windows.net/synapse/workspaces/ywtestworkspacewcu/batchjobs/Spark%20job%20definition%202/main.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "fed1061f-805d-4f10-8913-05ce929010f0"
+			},
+			"args": [],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2
+		}
+	}
+}
