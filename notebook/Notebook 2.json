@@ -1,5 +1,5 @@
 {
-	"name": "Notebook 1",
+	"name": "Notebook 2",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "159a98c7-c752-4131-8d1e-41b66ea92413"
+				"spark.autotune.trackingId": "8b78d46c-268d-4d34-8441-bb08c2e63342"
 			}
 		},
 		"metadata": {
@@ -32,7 +32,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"print(\"I'm wcsbranch\")"
+					"%run \"Notebook 1\""
 				],
 				"execution_count": null
 			}
