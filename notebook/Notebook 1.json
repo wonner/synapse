@@ -18,7 +18,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "390c3154-3ed1-4689-8419-3bd46096b929"
+				"spark.autotune.trackingId": "54cf7792-7e3b-46ad-9b06-708a11ab2119"
 			}
 		},
 		"metadata": {
@@ -52,7 +52,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"print(\"i am master\")"
+					"print(\"i am master commit\")"
 				],
 				"execution_count": null
 			},
