@@ -1039,7 +1039,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "390c3154-3ed1-4689-8419-3bd46096b929"
+						"spark.autotune.trackingId": "ba2393c9-d461-41c8-affe-29222b217212"
 					}
 				},
 				"metadata": {
@@ -1064,15 +1064,17 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
-							"print(\"i am master\")"
+							"print(\"i am master commit\")"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -1121,7 +1123,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cc0e3339-fa6f-4e4d-b995-27e9c22cc0a7"
+						"spark.autotune.trackingId": "23a99ef3-c7a0-4c28-8d1b-1566712f1288"
 					}
 				},
 				"metadata": {
@@ -1146,15 +1148,13 @@
 						"sparkVersion": "3.1",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"%run \"Notebook 1\""
 						],
