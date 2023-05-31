@@ -268,7 +268,7 @@
 							"snapshot": true,
 							"sparkPool": {
 								"referenceName": {
-									"value": "@pipeline().Pipeline",
+									"value": "testpool",
 									"type": "Expression"
 								},
 								"type": "BigDataPoolReference"
