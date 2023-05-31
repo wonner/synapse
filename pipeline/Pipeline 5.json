@@ -22,7 +22,7 @@
 					"snapshot": true,
 					"sparkPool": {
 						"referenceName": {
-							"value": "@pipeline().Pipeline",
+							"value": "testpool",
 							"type": "Expression"
 						},
 						"type": "BigDataPoolReference"
@@ -56,7 +56,13 @@
 					"sparkPool": {
 						"referenceName": "testpool",
 						"type": "BigDataPoolReference"
-					}
+					},
+					"conf": {
+						"spark.dynamicAllocation.enabled": null,
+						"spark.dynamicAllocation.minExecutors": null,
+						"spark.dynamicAllocation.maxExecutors": null
+					},
+					"numExecutors": null
 				}
 			}
 		],
